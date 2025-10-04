@@ -1,0 +1,207 @@
+﻿@model List<InternshipCompaniesManager.Models.Application>
+
+@{
+    ViewBag.Title = "Мои апликации";
+}
+
+<style>
+    .table-primary {
+        border-radius: 5px;
+    }
+
+    /* Подобрени стилови за tooltip */
+    .status-tooltip {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .status-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 550px;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            border-radius: 15px 20px 10px 35px;
+            padding: 15px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.9;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 14px;
+            line-height: 1.9;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+            .status-tooltip .tooltip-text::after {
+                border-width: 8px;
+                border-color: rgba(40, 167, 69, 0.9) transparent transparent transparent;
+            }
+
+        .status-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 0.8;
+        }
+
+    .status-approved .tooltip-text {
+        background-color: #28a745;
+    }
+
+        .status-approved .tooltip-text::after {
+            border-color: rgba(40, 167, 69, 0.85);
+        }
+
+    .status-denied .tooltip-text {
+        background-color: #dc3545;
+    }
+
+        .status-denied .tooltip-text::after {
+            border-color: rgba(220, 53, 69, 0.85);
+        }
+
+    .status-pending .tooltip-text {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+        .status-pending .tooltip-text::after {
+            border-color: rgba(255, 193, 7, 0.85);
+        }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+    }
+</style>
+
+<h2 class="mb-4">Мои апликации</h2>
+
+@if (Model.Any())
+{
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Компанија</th>
+                <th>Портфолио линк</th>
+                <th>CV / Фајл</th>
+                <th>Датум</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@(app.Company?.Name ?? "Непозната компанија")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.PortfolioLink))
+                        {
+                            <a href="@app.PortfolioLink" target="_blank" rel="noopener noreferrer">Погледни</a>
+                        }
+                        else
+                        {
+                            <span>Нема линк</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.CVFilePath))
+                        {
+                            <a href="@Url.Content(app.CVFilePath)" target="_blank" rel="noopener noreferrer">Погледни CV</a>
+                        }
+                        else
+                        {
+                            <span>Нема CV</span>
+                        }
+                    </td>
+                    <td>@app.AppliedOn.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @if (app.Status == "Pending")
+                        {
+                            <span class="badge bg-warning text-dark status-tooltip status-pending">
+                                Во обработка
+                                <span class="tooltip-text">
+                                    <strong>Статус: Во обработка</strong><br><br>
+                                    Вашата апликација е во процес на преглед. <br />
+                                    Компанијата моментално ги разгледува сите апликации. <br />
+                                    Очекувајте одговор во следните неколку дена.
+                                </span>
+                            </span>
+                        }
+                        else if (app.Status == "Approved")
+                        {
+                            <span class="badge bg-success status-tooltip status-approved">
+                                Одобрено
+                                <span class="tooltip-text">
+                                    Статус: Одобрено<br>
+                                    <br />
+                                    Во најскоро време ќе бидете <br />контактирани
+                                    од компанијата за понатамошни чекори и детали.
+                                </span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger status-tooltip status-denied">
+                                Одбиено
+                                <span class="tooltip-text">
+                                    <strong>Статус: Одбиено</strong><br><br>
+                                    За жал, вашата апликација не беше одобрена за оваа позиција. <br />
+                                    Ова не значи дека не сте квалификувани <br /> - продолжи́те да аплицирате
+                                    за други позиции <br />кои одговараат на вашите вештини.
+                                </span>
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        Немате аплицирано за ниту една компанија.
+    </div>
+    <a href="@Url.Action("Index", "Companies")" class="btn btn-primary">Прегледај компании</a>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ($(window).width() < 768) {
+                $('.status-tooltip').click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    $('.status-tooltip').not(this).removeClass('active');
+
+                    $(this).toggleClass('active');
+
+                    if ($(this).hasClass('active')) {
+                        $(this).find('.tooltip-text').css({
+                            'visibility': 'visible',
+                            'opacity': '1'
+                        });
+                    } else {
+                        $(this).find('.tooltip-text').css({
+                            'visibility': 'hidden',
+                            'opacity': '0'
+                        });
+                    }
+                });
+
+                $(document).click(function (e) {
+                    if (!$(e.target).closest('.status-tooltip').length) {
+                        $('.status-tooltip').removeClass('active').find('.tooltip-text').css({
+                            'visibility': 'hidden',
+                            'opacity': '0'
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}

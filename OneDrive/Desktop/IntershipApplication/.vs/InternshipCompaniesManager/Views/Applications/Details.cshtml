@@ -1,0 +1,88 @@
+﻿@model InternshipCompaniesManager.Models.Application
+
+@{
+    ViewBag.Title = "Детали за апликацијата";
+}
+
+<div class="container mt-4">
+    <h2>Детали за апликацијата</h2>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>@Model.Company?.Name</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Студент:</dt>
+                <dd class="col-sm-9">@Model.User?.Email</dd>
+
+                <dt class="col-sm-3">Датум на аплицирање:</dt>
+                <dd class="col-sm-9">@Model.AppliedOn.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Статус:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Status == "Pending")
+                    {
+                        <span class="badge bg-warning text-dark">Во обработка</span>
+                    }
+                    else if (Model.Status == "Approved")
+                    {
+                        <span class="badge bg-success">Одобрено</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Одбиено</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Портфолио:</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.PortfolioLink))
+                    {
+                        <a href="@Model.PortfolioLink" target="_blank">@Model.PortfolioLink</a>
+                    }
+                    else
+                    {
+                        <span>Нема портфолио</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">CV:</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.CVFilePath))
+                    {
+                        <a href="@Url.Content(Model.CVFilePath)" target="_blank">Погледни CV</a>
+                    }
+                    else
+                    {
+                        <span>Нема CV</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Зошто си мотивиран:</dt>
+                <dd class="col-sm-9">@Model.Q1</dd>
+
+                <dt class="col-sm-3">Зошто оваа компанија:</dt>
+                <dd class="col-sm-9">@Model.Q2</dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            @if (User.IsInRole("Admin"))
+            {
+                <form action="@Url.Action("UpdateStatus", "Applications")" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="applicationId" value="@Model.Id" />
+                    <div class="input-group">
+                        <select name="newStatus" class="form-select">
+                            <option value="Pending" @(Model.Status == "Pending" ? "selected" : "")>Во обработка</option>
+                            <option value="Approved" @(Model.Status == "Approved" ? "selected" : "")>Одобрено</option>
+                            <option value="Rejected" @(Model.Status == "Rejected" ? "selected" : "")>Одбиено</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Ажурирај</button>
+                    </div>
+                </form>
+            }
+            <a href="@Url.Action(User.IsInRole("Admin") ? "AllApplications" : "MyApplications")" class="btn btn-secondary float-end">Назад</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<main aria-labelledby="title">
+    <header class="about-header">
+        <img style="width:100px;height:auto;margin-left:0px" src="~/logo1.png" alt="Alternate Text" />
+        <h1 id="title">About</h1>
+
+        <h2><b>Internship Companies Manager</b></h2>
+    </header>
+
+    <div class="about-content" style="border:1px solid black; border-radius:10px;">
+        <section>
+            <h3>Project for Internet Technologies Course</h3>
+            <p>
+                The "Internship Companies Manager" application is a web solution designed to facilitate
+                the management and overview of companies offering student internships. Through this application,
+                administrators can easily add, edit, and delete company information, while students (users)
+                can simply and quickly browse all available companies, their sectors, contact information,
+                and number of open positions.
+            </p>
+        </section>
+
+        <section>
+            <h3>Application Features</h3>
+            <p>
+                The application is designed with a clear role division, where "Admin" users have full
+                data management rights, while "User" users can only view information, enabling secure
+                and controlled interaction. The system uses a modern MVC design pattern that facilitates
+                application maintenance and expansion, while the implementation of modern UI technologies
+                ensures an intuitive and user-friendly interface.
+            </p>
+        </section>
+
+        <section>
+            <h3>Practical Application</h3>
+            <p>
+                This solution is practical and applicable in real situations at faculty or company level,
+                enabling better organization and quick information about student internship opportunities,
+                making it useful for students, administrators, and companies alike.
+            </p>
+        </section>
+    </div>
+</main>
+
+
+
+<style>
+    .about-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    .logo-container {
+        margin: 0 auto 20px;
+        width: 150px;
+        height: 100px;
+    }
+
+    .logo-placeholder {
+        width: 100%;
+        height: 100%;
+        border: 1px dashed #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+    }
+
+    .about-content {
+        max-width: 800px;
+        margin: 0 auto 50px;
+        line-height: 1.6;
+        padding: 0 20px;
+    }
+
+        .about-content section {
+            margin-bottom: 30px;
+        }
+
+        .about-content h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .about-content p {
+            text-align: justify;
+        }
+
+    .about-footer {
+        background-color: #f8f9fa;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+    }
+
+    .footer-content {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+
+    .finki-logo-container {
+        width: 150px;
+    }
+
+    .finki-logo {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .footer-info {
+        text-align: right;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    @@media (max-width: 600px) {
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-info {
+            text-align: center;
+            margin-top: 15px;
+        }
+    }
+</style>

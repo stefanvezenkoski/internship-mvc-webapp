@@ -1,0 +1,160 @@
+﻿@model InternshipCompaniesManager.Models.Company
+
+@{
+    ViewBag.Title = Model != null ? Model.Name : "Детали за компанијата";
+}
+
+<div class="container py-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">@Model.Name</h2>
+        </div>
+
+        <div class="card-body">
+            <!-- Company Logo/Image -->
+            <div class="text-center mb-4">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/300x150?text=No+Logo" : Model.ImageUrl)"
+                     class="img-fluid rounded"
+                     style="max-height: 200px;"
+                     alt="@Model.Name logo">
+            </div>
+
+            <!-- Main Company Info -->
+            <div class="row mb-4">
+                <<div class="col-md-6">
+    <h4 class="text-primary"><i class="fas fa-info-circle me-2"></i>Основни информации</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">Сектор:</dt>
+        <dd class="col-sm-8">@Model.Sector</dd>
+        <dt class="col-sm-4">Позиција:</dt>
+        <dd class="col-sm-8">@Model.Position</dd>
+        <dt class="col-sm-4">Отворени позиции:</dt>
+        <dd class="col-sm-8">
+            @if(Model.OpenPositions > 0)
+            {
+                @Model.OpenPositions
+            }
+            else
+            {
+                <span style="color: red;">НЕМА СЛОБОДНИ МЕСТА ЗА ОВОЈ ОГЛАС ЗА ПРАКСА</span>
+            }
+        </dd>
+        <dt class="col-sm-4">Адреса:</dt>
+        <dd class="col-sm-8">@Model.Address</dd>
+    </dl>
+</div>
+
+                <div class="col-md-6">
+                    <h4 class="text-primary"><i class="fas fa-address-card me-2"></i>Контакт</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8"><a href="mailto:@Model.Email">@Model.Email</a></dd>
+                        <dt class="col-sm-4">Телефон:</dt>
+                        <dd class="col-sm-8">@Model.ContactPhone</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Company Description -->
+            <div class="bg-light p-4 rounded mb-4">
+                <h4 class="text-primary"><i class="fas fa-file-alt me-2"></i>Детали за апликацијата</h4>
+                <hr />
+                <div class="company-description">
+                    @if (string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <p class="text-muted">Описот не е додаден. <a href="@Url.Action("Edit", new { id = Model.Id })">Кликнете тука за да го додадете</a>.</p>
+
+                        }
+                        else
+                        {
+                            <p class="text-muted">Нема достапен опис за оваа компанија.</p>
+                        }
+                    }
+                    else
+                    {
+                        <div>@Html.Raw(Model.Description)</div>
+
+                        if (User.IsInRole("Admin"))
+                        {
+                            <p class="text-muted"><a href="@Url.Action("Edit", new { id = Model.Id })">(промени)</a></p>
+
+                        }
+
+
+
+                    }
+                </div>
+            </div>
+
+            <!-- Key Info -->
+            <div class="bg-light p-4 rounded">
+                <h4 class="text-primary"><i class="fas fa-star me-2"></i>Клучни информации</h4>
+                <hr />
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> Основана во 2010 година</li>
+                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> 50+ вработени</li>
+                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> ISO сертифицирана</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            @* Edit копчето само за Admin *@
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary me-2">
+                    <i class="fas fa-edit me-1"></i> Уреди
+                </a>
+            }
+
+            @if (User.IsInRole("Student"))
+            {
+                if (Model.OpenPositions > 0)
+                {
+                    using (Html.BeginForm("Apply", "Applications", FormMethod.Post))
+                    {
+                        @Html.Hidden("companyId", Model.Id)
+                        <a href="@Url.Action("Apply", "Applications", new { companyId = Model.Id })" class="btn btn-primary">
+                            Аплицирај
+                        </a>
+                    }
+
+                }
+                else
+                {
+                        <i style="color:red" class="fas fa-times-circle me-2"></i>
+                        <span style="color:red;margin-right:5px;" class="fw-bold">НЕМА СЛОБОДНИ МЕСТА</span>
+                    }
+            }
+            else if (!User.Identity.IsAuthenticated)
+            {
+                <p class="text-danger">Мора да сте најавени како студент за да аплицирате.</p>
+            }
+
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Назад кон листата
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .company-description {
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        dt {
+            font-weight: 500;
+        }
+
+        .card {
+            border-radius: 10px;
+        }
+    </style>
+}

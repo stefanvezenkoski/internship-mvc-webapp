@@ -1,0 +1,273 @@
+﻿@{
+    ViewBag.Title = "Дома";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Lora', serif;
+    }
+
+    .container.bg-image {
+        background-image: url('@Url.Content("~/wallpaper.png")');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        min-height: 5vh;
+    }
+
+    .bg-image {
+        background-image: url('@Url.Content("~/wallpaper.png")');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .welcome-message {
+        color: white;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+
+
+    .feature-card {
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .testimonial-img {
+        border: solid 3px black;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #4a6fa5, #166088);
+        border: none;
+        border-radius: 30px;
+        padding: 12px 30px;
+        font-weight: 600;
+    }
+
+    .btn-outline-light {
+        border-radius: 30px;
+        padding: 12px 30px;
+        font-weight: 600;
+    }
+
+    .bg-feature {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<header class="py-5 bg-image">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    <h1 class="display-5 fw-bolder text-white mb-2">Истражи компании за пракса</h1>
+                    <p class="lead text-white-50 mb-4">Платформа за лесен и брз преглед на достапни компании за студентска пракса.</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a class="btn btn-primary btn-lg px-4 me-sm-3" href="@Url.Action("Index", "Companies")">Започни сега</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="@Url.Action("About", "Home")">За апликацијата</a>
+                    </div>
+
+                    <div class="mt-4">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="welcome-message">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <span>Добредојдовте, админ @User.Identity.Name!</span>
+                                }
+                                else if (User.IsInRole("Student"))
+                                {
+                                    <span>Добредојдовте, студент @User.Identity.Name!</span>
+                                }
+                                else
+                                {
+                                    <span>Добредојдовте!</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light btn-lg px-4 mt-3" href="@Url.Action("Login", "Account")">
+                                Најави се
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="py-5 border-bottom" id="features">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4 p-lg-5">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4"><i class="bi bi-search"></i></div>
+                        <h2 class="h4 fw-bolder">Пребарување компании</h2>
+                        <p>Брзо пребарувај компании по име, област или опис. Филтрирај ги според твоите интереси.</p>
+                        <a class="text-decoration-none" href="@Url.Action("Index", "Companies")">
+                            Прегледај ги компаниите
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4 p-lg-5">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4"><i class="bi bi-file-earmark-text"></i></div>
+                        <h2 class="h4 fw-bolder">Не си регистриран? Направи го тоа брзо</h2>
+                        <p>
+                            Што чекаш? Со регистрација можеш да пребаруваш компании, да читаш детали и да аплицираш за твојата идеална пракса.
+                        </p>
+                        <a class="text-decoration-none" href="@Url.Action("Register", "Account")">
+                            Регистрирај се
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4 p-lg-5">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4"><i class="bi bi-info-circle"></i></div>
+                        <h2 class="h4 fw-bolder">Партнери</h2>
+                        <p>
+                            Запознај се со компаниите кои нудат вредни можности за практична работа и развој за студентите.
+                        </p>
+                        <a class="text-decoration-none" href="@Url.Action("Partners", "Companies")">
+                            Види ги парнер компаниите
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 border-bottom bg-light">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bolder">Искуства од студенти</h2>
+            <p class="lead mb-0">Оваа платформа им помогна на многумина</p>
+        </div>
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex">
+                            <img class="testimonial-img" src="https://randomuser.me/api/portraits/men/74.jpg" alt="Photo of applicant">
+                            <div class="ms-4">
+                                <p class="mb-1">Преку оваа апликација ја најдов мојата прва пракса! Многу едноставна и корисна.</p>
+                                <div style="color:deepskyblue" class="small text-muted">– Петар, студент на ФИНКИ</div>
+                            </div>
+                            <br />
+                            @{
+                                int rating = 5;
+                            }
+
+                            <div style="display:flex; flex-direction:row;">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= rating)
+                                    {
+                                        <i style="color:yellow;" class="bi bi-star-fill text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-warning"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="d-flex">
+                            <img class="testimonial-img" src="https://randomuser.me/api/portraits/women/15.jpg" alt="Photo of applicant">
+                            <div class="ms-4">
+                                <p class="mb-1">Одлична идеја и реализација. Ја користев и како референца за мој проект.</p>
+                                <div style="color:deepskyblue" class="small text-muted">
+                                    – Росана, Софтвер инженер во <span style="color:darkblue;">G+D Netcetera</span>
+                                </div>
+                            </div>
+                            <br />
+                            @{
+                                int rating1 = 5;
+                            }
+
+                            <div style="display:flex; flex-direction:row;">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= rating1)
+                                    {
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-warning"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container px-5">
+        <div class="row gx-5 text-center">
+            <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+                <div class="icon-custom mb-2">
+                    <i class="bi bi-building fs-1"></i>
+                </div>
+                <div class="h5 fw-bolder">50+</div>
+                <p class="text-muted mb-0">Компании партнери</p>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+                <div class="icon-custom mb-2">
+                    <i class="bi bi-people fs-1"></i>
+                </div>
+                <div class="h5 fw-bolder">1000+</div>
+                <p class="text-muted mb-0">Задоволни студенти</p>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                <div class="icon-custom mb-2">
+                    <i class="bi bi-briefcase fs-1"></i>
+                </div>
+                <div class="h5 fw-bolder">200+</div>
+                <p class="text-muted mb-0">Позиции за пракса</p>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="icon-custom mb-2">
+                    <i class="bi bi-award fs-1"></i>
+                </div>
+                <div class="h5 fw-bolder">98%</div>
+                <p class="text-muted mb-0">Успешност</p>
+            </div>
+        </div>
+    </div>
+</section>

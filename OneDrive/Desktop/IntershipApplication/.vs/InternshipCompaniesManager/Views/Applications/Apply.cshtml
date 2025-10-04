@@ -1,0 +1,114 @@
+﻿@model InternshipCompaniesManager.Models.Application
+
+@{
+    ViewBag.Title = "Аплицирај";
+    var companyName = Model.Company?.Name ?? "компанијата";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Аплицирај за @companyName</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @using (Html.BeginForm("Apply", "Applications", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.CompanyId)
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Зошто си мотивиран да аплицираш? <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(m => m.Q1, new
+                    {
+                        @class = "form-control",
+                        rows = 5,
+                        placeholder = "Објасни што те мотивира за оваа улога...",
+                        required = "required"
+                    })
+                    @Html.ValidationMessageFor(m => m.Q1, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Зошто ја одбра токму оваа компанија? <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(m => m.Q2, new
+                    {
+                        @class = "form-control",
+                        rows = 5,
+                        placeholder = "Сподели што те привлекува кај компанијата...",
+                        required = "required"
+                    })
+                    @Html.ValidationMessageFor(m => m.Q2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Линк до портфолио (опционално)</label>
+                    @Html.TextBoxFor(m => m.PortfolioLink, new
+                    {
+                        @class = "form-control",
+                        placeholder = "https://пример.com/портфолио"
+                    })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Прикачи CV <span class="text-danger">*</span></label>
+                    <input type="file" name="CVFile" class="form-control" accept=".pdf,.doc,.docx" required />
+                    @Html.ValidationMessage("CVFile", "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="@Url.Action("Details", "Companies", new { id = Model.CompanyId })" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Назад кон компанијата
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Поднеси апликација
+            </button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function() {
+                const fileInput = $('input[type="file"]')[0];
+                if (fileInput.files.length > 0) {
+                    const fileSize = fileInput.files[0].size;
+                    const maxSize = 5 * 1024 * 1024;
+
+                    if (fileSize > maxSize) {
+                        alert('Фајлот е преголем. Максимална дозволена големина е 5MB.');
+                        return false;
+                    }
+                }
+                return true;
+            });
+        });
+    </script>
+}
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+</style>

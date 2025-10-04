@@ -1,0 +1,24 @@
+﻿@model IEnumerable<InternshipCompaniesManager.Models.Company>
+
+<h2>Партнери компании</h2>
+
+@{
+    var seen = new HashSet<string>();
+}
+
+<div class="row">
+    @foreach (var company in Model)
+    {
+        if (!seen.Contains(company.Name))
+        {
+            seen.Add(company.Name);
+            <div class="col-md-3 text-center mb-4">
+                <img src="@(string.IsNullOrEmpty(company.ImageUrl) ? Url.Content("~/Content/images/default-logo.png") : company.ImageUrl)"
+                     alt="@company.Name лого"
+                     style="max-width: 150px; max-height: 100px; object-fit: contain;" />
+                <p>@company.Name</p>
+            </div>
+        }
+    }
+</div>
+

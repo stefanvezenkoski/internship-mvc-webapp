@@ -1,0 +1,87 @@
+﻿@model List<InternshipCompaniesManager.Models.Application>
+
+@{
+    ViewBag.Title = "Сите апликации";
+}
+
+<h2 class="mb-4">Сите апликации</h2>
+
+@if (Model.Any())
+{
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Студент</th>
+                <th>Компанија</th>
+                <th>Портфолио линк</th>
+                <th>CV / Фајл</th>
+                <th>Зошто си мотивиран?</th>
+                <th>Зошто оваа компанија?</th>
+                <th>Датум</th>
+                <th>Статус</th>
+                <th>Акција</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@(app.User?.Email ?? "Непознат корисник")</td>
+                    <td>@(app.Company?.Name ?? "Непозната компанија")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.PortfolioLink))
+                        {
+                            <a href="@app.PortfolioLink" target="_blank" rel="noopener noreferrer">Погледни</a>
+                        }
+                        else
+                        {
+                            <span>Нема линк</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.CVFilePath))
+                        {
+                            <a href="@Url.Content(app.CVFilePath)" target="_blank" rel="noopener noreferrer">Погледни CV</a>
+                        }
+                        else
+                        {
+                            <span>Нема CV</span>
+                        }
+                    </td>
+                    <td style="max-width: 200px; white-space: pre-wrap;">@app.Q1</td>
+                    <td style="max-width: 200px; white-space: pre-wrap;">@app.Q2</td>
+                    <td>@app.AppliedOn.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        <form action="@Url.Action("UpdateStatus", "Applications")" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="applicationId" value="@app.Id" />
+                            <select name="newStatus" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="Pending" @(app.Status == "Pending" ? "selected" : "")>Во обработка</option>
+                                <option value="Approved" @(app.Status == "Approved" ? "selected" : "")>Одобрено</option>
+                                <option value="Rejected" @(app.Status == "Rejected" ? "selected" : "")>Одбиено</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td style="display:flex;gap:4px;">
+                        <a style="padding:5px;" href="@Url.Action("Details", new { id = app.Id })" class="btn btn-sm btn-info">Детали</a>
+                        @using (Html.BeginForm("Delete", "Applications", new { id = app.Id }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Дали сте сигурни дека сакате да ја избришете оваа апликација?')">
+                                <i class="fas fa-trash-alt"></i> Избриши
+                            </button>
+                        }
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        Нема апликации.
+    </div>
+}
